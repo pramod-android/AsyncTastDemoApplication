@@ -6,13 +6,29 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URI;
+
 public class MainActivity extends AppCompatActivity {
 
     Button btnNext;
+    String TAG="Main Activity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,20 +59,73 @@ public class MainActivity extends AppCompatActivity {
 
         protected String doInBackground(String... args) {
 
-            String str=args[0];
-            // do background work here
+
+            String url = "http://api.androidhive.info/contacts/";
+            String jsonStr = "";
             try {
-                Thread.sleep(4000);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
+                // Making a request to url and getting response
+                HttpClient client = new DefaultHttpClient();
+                HttpGet request = new HttpGet();
+                request.setURI(new URI(url));
+                HttpResponse response = client.execute(request);
+                jsonStr = EntityUtils.toString(response.getEntity());
+            } catch (MalformedURLException e) {
+                Log.e(TAG, "MalformedURLException: " + e.getMessage());
+            } catch (ProtocolException e) {
+                Log.e(TAG, "ProtocolException: " + e.getMessage());
+            } catch (IOException e) {
+                Log.e(TAG, "IOException: " + e.getMessage());
+            } catch (Exception e) {
+                Log.e(TAG, "Exception: " + e.getMessage());
+            }
+
+
+
+
+//            String str=args[0];
+//            // do background work here
+//            try {
+//                Thread.sleep(4000);
+//            } catch (InterruptedException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
+//
+
+            return jsonStr;
+        }
+
+        protected void onPostExecute(String result) {
+
+
+            try {
+                JSONObject mainObj=new JSONObject(result);
+
+                JSONArray arrObj=mainObj.getJSONArray("contacts");
+
+                for(int item=0;item<arrObj.length();item++){
+
+                    JSONObject jsonObject=arrObj.getJSONObject(item);
+
+                    String name=jsonObject.getString("name");
+
+                    JSONObject phoneObj=jsonObject.getJSONObject("phone");
+                    String number=phoneObj.getString("mobile");
+
+
+                    Toast.makeText(MainActivity.this, name+" "+number, Toast.LENGTH_SHORT).show();
+
+                }
+
+
+
+
+
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
 
 
-            return str;
-        }
-
-        protected void onPostExecute(String result) {
             // do UI work here
             if (dialog.isShowing()) {
                 dialog.dismiss();
