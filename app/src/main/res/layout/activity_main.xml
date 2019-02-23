@@ -4,13 +4,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
+
 
     <Button
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Next"
-        android:layout_margin="20dp"/>
+        android:layout_margin="0dp"/>
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_margin="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <AutoCompleteTextView
+        android:id="@+id/autoCompleteTextView"
+        android:layout_width="match_parent"
+        android:layout_margin="0dp"
+        android:layout_height="wrap_content"
+        android:text="AutoCompleteTextView" />
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 
 </LinearLayout>
